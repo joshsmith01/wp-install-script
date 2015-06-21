@@ -5,6 +5,7 @@ echo "================================================================="
 echo "Awesome WordPress and FoundationPress Theme Installer!!"
 echo "================================================================="
 
+
 # accept the name of our website
 echo "$(tput setaf 4)$(tput setab 7)Site Name: $(tput sgr 0)"
 read -e sitename
@@ -25,12 +26,40 @@ sitedirectory="$(echo -e "${sitename}" | tr -s ' ' '-' | tr '[:upper:]' '[:lower
 
 # My path to my server host directory
 # Those who clone this will likely need to change this path to their own hosting directory. 
-dirpath=$HOME/localhost/
+dirpath=$HOME/sites/
 # assign user naming conventions
 wpuser='dev_'${sitedirectory}
 fpthemename=${sitename}'_theme'
 adminemail='joshsmith01@me.com'
-siteurl='http://localhost:8888/'${sitedirectory}
+siteurl='http://'${sitedirectory}
+
+# 
+# # test to see if the directory can be made
+# mkdir -p /Applications/MAMP/Library/vhosts;
+# mkdir -p /Applications/MAMP/Library/vhosts/domains;
+# 
+# 
+# # Add vhost
+# touch /Applications/MAMP/Library/vhosts/domains/${sitedirectory};
+#  
+#   echo "<VirtualHost *:80>
+#     DocumentRoot "~/sites/${sitedirectory}"
+#     ServerName ${sitedirectory}
+#     <Directory "~/sites/${sitedirectory}">
+#         Options All
+#         AllowOverride All
+#         Order allow,deny
+#         Allow from all
+#     </Directory>
+# </VirtualHost>" >> /Applications/MAMP/Library/vhosts/domains/${sitedirectory};
+#  
+#   echo "127.0.0.1 ${sitedirectory}" >> changehosts;
+#   echo "past the etc"
+#   # Restart MAMP
+#   /Applications/MAMP/bin/apache2/bin/apachectl restart;
+
+
+
 
 # if the user didn't say no, then go ahead and install
 if [ "$run" == n ] ; then
@@ -144,8 +173,20 @@ echo ""
 echo "================================================================="
 
 # Open the new website with Google Chrome
-/usr/bin/open -a "/Applications/Google Chrome.app" "http://localhost:8888/$sitedirectory/wp-login.php"
+/usr/bin/open -a "/Applications/Google Chrome.app" "http://$sitedirectory/wp-login.php"
+cd ${dirpath}${sitedirectory}/wp-content/themes/$fpthemename
+# startbitbucket - creates remote bitbucket repo and adds it as git remote to cwd
+    echo 'Username?'
+    read username
+    echo 'Password?'
+    read password
 
+    git remote set-url origin https://$username@bitbucket.org/$username/$fpthemename.git
+    
+    curl --user $username:$password https://api.bitbucket.org/1.0/repositories/ --data name=$fpthemename --data is_private='true'
+
+    git push -u origin --all
+    git push -u origin --tags
 # END check if core is downloaded and download it
 # fi
 fi
