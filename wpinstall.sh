@@ -33,7 +33,7 @@ fpthemename=${sitename}'_theme'
 adminemail='joshsmith01@me.com'
 siteurl='http://'${sitedirectory}
 
-# 
+
 # # test to see if the directory can be made
 # mkdir -p /Applications/MAMP/Library/vhosts;
 # mkdir -p /Applications/MAMP/Library/vhosts/domains;
@@ -56,9 +56,9 @@ siteurl='http://'${sitedirectory}
 #   echo "127.0.0.1 ${sitedirectory}" >> changehosts;
 #   echo "past the etc"
 #   # Restart MAMP
-#   /Applications/MAMP/bin/apache2/bin/apachectl restart;
-
-
+#   sudo /Applications/MAMP/Library/bin/httpd -f "/Library/Application Support/appsolute/MAMP PRO/conf/httpd.conf" -k restart
+#   echo "mamp restart"
+#   exit
 
 
 # if the user didn't say no, then go ahead and install
