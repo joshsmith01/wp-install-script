@@ -1,4 +1,7 @@
 #!/bin/bash -e
+# Possible Trouble Shooting Tip
+# *Ensure the PHP that MAMP is using is the same as the the PHP wp-cli is using
+# 
 
 clear
 echo "================================================================="
@@ -136,15 +139,15 @@ wp theme list --status=inactive --field=name | while read THEME; do wp theme del
 
 # install the FoundationPress theme
 cd $dirpath$sitedirectory/wp-content/themes/
-git clone https://github.com/joshsmith01/FoundationPress.git
-mv FoundationPress $fpthemename
+git clone https://joshsmith_tribus@bitbucket.org/tribusmedia/tm-starter-01.git
+mv tm-starter-01 $fpthemename
 cd $fpthemename
-sudo npm install && bower install && grunt build
+sudo npm install
 
 clear
 # Change the newly cloned theme style.css to the site's name so it displays 
 # correctly in the Dashboard. -JMS
-themename_old='Theme Name:         FoundationPress'
+themename_old='Theme Name:         tm-starter-01'
 themename_new='Theme Name:         '$fpthemename
 pwd
 sed -i '' "s%$themename_old%$themename_new%g" $dirpath$sitedirectory/wp-content/themes/$fpthemename/style.css
@@ -164,18 +167,11 @@ wp menu location assign main-navigation top-bar-r
 
 clear
 
-echo "================================================================="
-echo "Installation is complete. Your username/password is listed below."
-echo ""
-echo "Username: $wpuser"
-echo "Password: $password"
-echo ""
-echo "================================================================="
-
 # Open the new website with Google Chrome
 /usr/bin/open -a "/Applications/Google Chrome.app" "http://$sitedirectory/wp-login.php"
 cd ${dirpath}${sitedirectory}/wp-content/themes/$fpthemename
 # startbitbucket - creates remote bitbucket repo and adds it as git remote to cwd
+    echo 'Enter Your Bitbucket Credentials'
     echo 'Username?'
     read username
     echo 'Password?'
@@ -189,4 +185,14 @@ cd ${dirpath}${sitedirectory}/wp-content/themes/$fpthemename
     git push -u origin --tags
 # END check if core is downloaded and download it
 # fi
+
+
+echo "================================================================="
+echo "Installation is complete. Your username/password is listed below."
+echo ""
+echo "Username: $wpuser"
+echo "Password: $password"
+echo ""
+echo "================================================================="
+
 fi
