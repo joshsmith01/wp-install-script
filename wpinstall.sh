@@ -103,8 +103,11 @@ wp core install --url="$siteurl" --title="$sitename" --admin_user="$wpuser" --ad
 # discourage search engines
 wp option update blog_public 0
 
-# discourage search engines
+# posts per page
 wp option update posts_per_page 6
+
+# delete stock post 
+wp post delete 1 --force
 
 # delete sample page, and create homepage
 wp post delete $(wp post list --post_type=page --posts_per_page=1 --post_status=publish --pagename="sample-page" --field=ID --format=ids)
@@ -131,6 +134,15 @@ wp rewrite flush --hard
 wp plugin delete hello
 # install seo yoast plugin
 wp plugin install wordpress-seo
+if [ -c ~/Google Drive/Tribusmedia/Development/Downloads/WP Migrate DB Pro.zip ]
+then
+  wp plugin install ~/Google Drive/Tribusmedia/Development/Downloads/WP Migrate DB Pro.zip
+  else wp plugin install wp-migrate-db --activate
+fi
+wp plugin install WPide --activate
+wp plugin install woocommerce --activate
+wp plugin install contact-form-7 --activate
+wp plugin install advanced-custom-fields --activate
 
 ## themes
 # removes the inactive themes that automattically come wth an fresh installation of WP. Since WP needs one
