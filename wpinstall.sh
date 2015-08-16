@@ -3,29 +3,40 @@
 # *Ensure the PHP that MAMP is using is the same as the the PHP wp-cli is using
 # 
 
+RED="\033[0;31m"
+YELLOW="\033[33m"
+REDBG="\033[0;41m"
+WHITE="\033[1;37m"
+NC="\033[0m"
+
 clear
-echo "================================================================="
-echo "Awesome WordPress and FoundationPress Theme Installer!!"
-echo "================================================================="
+echo -e "${RED}=================================================================${NC}"
+echo -e "${REDBG}${WHITE}Awesome WordPress and FoundationPress Theme Installer!!${NC}"
+echo -e "${RED}=================================================================${NC}"
 
 
 # accept the name of our website
-echo "$(tput setaf 4)$(tput setab 7)Site Name: $(tput sgr 0)"
+echo "$(tput setaf 4)$(tput setab 7)Site Name:$(tput sgr 0)"
 read -e sitename
 
 # accept a comma separated list of pages
-echo "$(tput setaf 4)$(tput setab 7)Add a comma separated list of pages: $(tput sgr 0)"
+echo "$(tput setaf 4)$(tput setab 7)Add a comma separated list of pages:$(tput sgr 0)"
 read -e allpages
 
 # add a simple yes/no confirmation before we proceed
-echo "$(tput setaf 4)$(tput setab 7)Run Install? (y/n) $(tput sgr 0)"
-read -e run
+echo "$(tput setaf 4)$(tput setab 7)What's your first name$(tput sgr 0)"
+read -e myname
 
+# add a simple yes/no confirmation before we proceed
+echo "$(tput setaf 4)$(tput setab 7)Run Install? (y/n)$(tput sgr 0)"
+read -e run
 
 ## variables ##
 # clean up site names and directory names
 dbname="$(echo -e "${sitename}" | tr -d '[[:space:]]' | tr '[:upper:]' '[:lower:]' | head -c 10)"
 sitedirectory="$(echo -e "${sitename}" | tr -s ' ' '-' | tr '[:upper:]' '[:lower:]')"
+
+myname="$(echo -e "${myname}" | tr '[:upper:]' '[:lower:]')"
 
 # My path to my server host directory
 # Those who clone this will likely need to change this path to their own hosting directory. 
@@ -35,6 +46,19 @@ wpuser='dev_'${sitedirectory}
 fpthemename=${sitename}'_theme'
 adminemail='joshsmith01@me.com'
 siteurl='http://'${sitedirectory}
+
+    echo -e "${RED}=================================================================${NC}"
+    echo -e "${REDBG}${WHITE}Enter Your Bitbucket Credentials${NC}"
+    echo -e "${RED}=================================================================${NC}"
+
+    echo 'Username?'
+    read username
+    echo 'Password?'
+    read -s password
+
+    curl -X POST -v -u $username:$password -H "Content-Type: application/json" \
+    https://api.bitbucket.org/2.0/repositories/tribusmedia/${fpthemename} \
+    -d '{"scm": "git", "has_wiki": "true", "is_private": "true", "fork_policy": "no_public_forks", "website": "", "description": "d", "has_issues": "true"  }'
 
 
 # # test to see if the directory can be made
@@ -138,12 +162,12 @@ wp rewrite flush --hard
 wp plugin delete hello
 # install install others
 wp plugin install wordpress-seo
-if [ -c ~/Google Drive/Tribusmedia/Development/Downloads/WP Migrate DB Pro.zip ]
+if [ -a ~/Google\ Drive/Tribusmedia/Development/Downloads/WP\ Migrate\ DB\ Pro.zip ]
 then
-  wp plugin install ~/Google Drive/Tribusmedia/Development/Downloads/WP Migrate DB Pro.zip
+  wp plugin install ~/Google\ Drive/Tribusmedia/Development/Downloads/WP\ Migrate\ DB\ Pro.zip
   else wp plugin install wp-migrate-db --activate
 fi
-wp plugin install WPide --activate
+wp plugin install wpide --activate
 wp plugin install woocommerce --activate
 wp plugin install contact-form-7 --activate
 wp plugin install advanced-custom-fields --activate
@@ -186,25 +210,21 @@ wp menu location assign main-navigation top-bar-r
 clear
 
 # Open the new website with Google Chrome
-/usr/bin/open -a "/Applications/Google Chrome.app" "http://$sitedirectory/wp-login.php"
+# /usr/bin/open -a "/Applications/Google Chrome.app" "http://$sitedirectory/wp-login.php"
 cd ${dirpath}${sitedirectory}/wp-content/themes/$fpthemename
 # startbitbucket - creates remote bitbucket repo and adds it as git remote to cwd
 # Users should use ssh if you can. It'll save you time from adding usernames and passwords.
 
+#   Use Bitbucket's 2.0 api to add repos
+    
 
-#     echo 'Enter Your Bitbucket Credentials'
-#     echo 'Username?'
-#     read username
-#     echo 'Password?'
-#     read password
-
-#     git remote set-url origin https://$username@bitbucket.org/$username/$fpthemename.git
-#     curl --user $username:$password https://api.bitbucket.org/1.0/repositories/ --data name=$fpthemename --data is_private='true'
-
-    git remote set-url origin https://git@bitbucket.org:tribusmedia/$fpthemename.git
-
+#   git remote set-url origin https://$username@bitbucket.org/$username/$fpthemename.git
+    git remote set-url origin git@bitbucket.org:tribusmedia/$fpthemename.git 
+    git branch initial-dev/${myname}
+    
     git push -u origin --all
     git push -u origin --tags
+    git checkout initial-dev/${myname}
 # END check if core is downloaded and download it
 # fi
 
