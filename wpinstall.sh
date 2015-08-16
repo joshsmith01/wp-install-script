@@ -112,6 +112,10 @@ wp post delete 1 --force
 # delete sample page, and create homepage
 wp post delete $(wp post list --post_type=page --posts_per_page=1 --post_status=publish --pagename="sample-page" --field=ID --format=ids)
 wp post create --post_type=page --post_title=Home --post_status=publish --post_author=$(wp user get $wpuser --field=ID --format=ids)
+wp post create --post_type=page --post_title=About --post_status=publish --post_author=$(wp user get $wpuser --field=ID --format=ids)
+wp post create --post_type=page --post_title=Contact --post_status=publish --post_author=$(wp user get $wpuser --field=ID --format=ids)
+wp post create --post_type=page --post_title=Store --post_status=publish --post_author=$(wp user get $wpuser --field=ID --format=ids)
+
 
 # set homepage as front page
 wp option update show_on_front 'page'
@@ -130,9 +134,9 @@ wp rewrite structure '/%postname%/' --hard
 wp rewrite flush --hard
 
 ## plugins
-# delete hello dolly
+# delete some and...
 wp plugin delete hello
-# install seo yoast plugin
+# install install others
 wp plugin install wordpress-seo
 if [ -c ~/Google Drive/Tribusmedia/Development/Downloads/WP Migrate DB Pro.zip ]
 then
@@ -145,13 +149,15 @@ wp plugin install contact-form-7 --activate
 wp plugin install advanced-custom-fields --activate
 
 ## themes
-# removes the inactive themes that automattically come wth an fresh installation of WP. Since WP needs one
-# active theme, this command only removes the inactive one. -JMS
+# removes the inactive themes that automatically come wth an fresh installation of WP. Since WP needs one
+# active theme, this command only removes the inactive ones. -JMS
 wp theme list --status=inactive --field=name | while read THEME; do wp theme delete $THEME; done;
 
-# install the FoundationPress theme
+# install the tm-starter-01 theme
 cd $dirpath$sitedirectory/wp-content/themes/
-git clone https://joshsmith_tribus@bitbucket.org/tribusmedia/tm-starter-01.git
+# If you get errors, use https to clone
+# git clone https://joshsmith_tribus@bitbucket.org/tribusmedia/tm-starter-01.git
+git clone git@bitbucket.org:tribusmedia/tm-starter-01.git
 mv tm-starter-01 $fpthemename
 cd $fpthemename
 sudo npm install
@@ -183,15 +189,19 @@ clear
 /usr/bin/open -a "/Applications/Google Chrome.app" "http://$sitedirectory/wp-login.php"
 cd ${dirpath}${sitedirectory}/wp-content/themes/$fpthemename
 # startbitbucket - creates remote bitbucket repo and adds it as git remote to cwd
-    echo 'Enter Your Bitbucket Credentials'
-    echo 'Username?'
-    read username
-    echo 'Password?'
-    read password
+# Users should use ssh if you can. It'll save you time from adding usernames and passwords.
 
-    git remote set-url origin https://$username@bitbucket.org/$username/$fpthemename.git
-    
-    curl --user $username:$password https://api.bitbucket.org/1.0/repositories/ --data name=$fpthemename --data is_private='true'
+
+#     echo 'Enter Your Bitbucket Credentials'
+#     echo 'Username?'
+#     read username
+#     echo 'Password?'
+#     read password
+
+#     git remote set-url origin https://$username@bitbucket.org/$username/$fpthemename.git
+#     curl --user $username:$password https://api.bitbucket.org/1.0/repositories/ --data name=$fpthemename --data is_private='true'
+
+    git remote set-url origin https://git@bitbucket.org:tribusmedia/$fpthemename.git
 
     git push -u origin --all
     git push -u origin --tags
