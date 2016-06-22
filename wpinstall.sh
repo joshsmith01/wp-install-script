@@ -44,7 +44,7 @@ dirpath=$HOME/sites/
 # assign user naming conventions
 wpuser='dev_'${sitedirectory}
 fpthemename=${sitename}'_theme'
-adminemail='joshsmith01@me.com'
+adminemail='joshsmith01.contact@gmail.com'
 siteurl='http://'${sitedirectory}
 
     echo -e "${RED}=================================================================${NC}"
@@ -55,10 +55,13 @@ siteurl='http://'${sitedirectory}
     read username
     echo 'Password?'
     read -s password
+# Verify what directory I'm in.  
+  pwd
+  # Clone my repo from GitHub
+  # git clone git@github.com:joshsmith01/wp-install-script.git
 
-    curl -X POST -v -u $username:$password -H "Content-Type: application/json" \
-    https://api.bitbucket.org/2.0/repositories/tribusmedia/${fpthemename} \
-    -d '{"scm": "git", "has_wiki": "true", "is_private": "true", "fork_policy": "no_public_forks", "website": "", "description": "d", "has_issues": "true"  }'
+  # Then exit the script
+  # exit
 
 
 # # test to see if the directory can be made
@@ -88,6 +91,59 @@ siteurl='http://'${sitedirectory}
 #   exit
 
 
+
+# #!/bin/bash -e
+# # https://gist.github.com/rsanchez/7139776
+# vhost( ) {
+#     if [[ -z $1 ]]; then
+#         echo 'usage: vhost [hostname]'
+#         return
+#     fi
+
+#     HOST=$1
+#     HOSTNAME="$HOST.dev"
+#     ADDRESS="127.0.0.1"
+#     SITEPATH="$HOME/Sites/$HOST"
+#     SETTINGSFILE="$HOME/Library/Application Support/appsolute/MAMP PRO/settings.plist"
+#     HOSTSFILE="$HOME/Library/Application Support/appsolute/MAMP PRO/writtenHosts.plist"
+
+#     if [[ ! -d "$SITEPATH" ]]; then
+#         mkdir "$SITEPATH"
+#     fi
+    
+#     echo 'hello'
+    
+    
+    
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts: dict" "$SETTINGSFILE"
+#     SETTINGSINDEX=$(/usr/libexec/PlistBuddy -c "Print :virtualHosts: dict" "$SETTINGSFILE" | grep documentRoot | wc -l | tr -d ' ')
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:Allow integer 0" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:AllowOverride integer 0" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:ExecCGI bool false" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:FollowSymLinks bool true" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:Includes bool true" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:Indexes bool false" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:MultiViews bool false" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:Order integer 0" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:SymLinksifOwnerMatch bool false" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:documentRoot string $SITEPATH" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:dyndns dict" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:dyndns:displayName string -" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:local bool true" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:serverAliases array" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:serverName string $HOSTNAME" "$SETTINGSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :virtualHosts:$SETTINGSINDEX:ssl bool false" "$SETTINGSFILE"
+
+#     /usr/libexec/PlistBuddy -c "Add :writtenHosts: array" "$HOSTSFILE"
+#     HOSTSINDEX=$(/usr/libexec/PlistBuddy -c "Print :writtenHosts: array" "$HOSTSFILE" | grep Array | wc -l | tr -d ' ' | expr $(cat -) - 2)
+#     /usr/libexec/PlistBuddy -c "Add :writtenHosts:$HOSTSINDEX:0 string $HOSTNAME" "$HOSTSFILE"
+#     /usr/libexec/PlistBuddy -c "Add :writtenHosts:$HOSTSINDEX:1 string $ADDRESS" "$HOSTSFILE"
+# }
+
+#   exit
+
+
+
 # if the user didn't say no, then go ahead and install
 if [ "$run" == n ] ; then
 exit
@@ -98,9 +154,14 @@ if [ ! -d ${dirpath}$sitedirectory ] ; then
   mkdir ${dirpath}$sitedirectory
 fi
 
+# Print the current directory first, then...
+# pwd
+
+# Move to the correct directory which should be where you create all your other sites...mine is in /sites
 # move controller into that newly created directory
 cd ${dirpath}$sitedirectory
 
+# Download
 wp core download
 # delete all themes and then reinstall twentyfifteen
 
@@ -161,16 +222,23 @@ wp rewrite flush --hard
 # delete some and...
 wp plugin delete hello
 # install install others
-wp plugin install wordpress-seo
-if [ -a ~/Google\ Drive/Tribusmedia/Development/Downloads/WP\ Migrate\ DB\ Pro.zip ]
+# WP Migrate Pro is a premium plugin that resides in a local folder. 
+# TODO: Install then update the WP Migrate Pro Plugin
+if [ -a ~/Google\ Drive/Efficiency\ of\ Movement/premium-plugins/WP\ Migrate\ DB\ Pro.zip ]
 then
-  wp plugin install ~/Google\ Drive/Tribusmedia/Development/Downloads/WP\ Migrate\ DB\ Pro.zip
+  wp plugin install ~/Google\ Drive/Efficiency\ of\ Movement/premium-plugins/WP\ Migrate\ DB\ Pro.zip
   else wp plugin install wp-migrate-db --activate
 fi
+wp plugin install wordpress-seo
 wp plugin install wpide --activate
 wp plugin install woocommerce --activate
 wp plugin install contact-form-7 --activate
 wp plugin install advanced-custom-fields --activate
+wp plugin install developer --activate
+wp plugin install debug-bar --activate
+wp plugin install debug-bar-console --activate
+wp plugin install debug-bar-extender --activate
+wp plugin install simply-show-ids --activate
 
 ## themes
 # removes the inactive themes that automatically come wth an fresh installation of WP. Since WP needs one
@@ -180,9 +248,8 @@ wp theme list --status=inactive --field=name | while read THEME; do wp theme del
 # install the tm-starter-01 theme
 cd $dirpath$sitedirectory/wp-content/themes/
 # If you get errors, use https to clone
-# git clone https://joshsmith_tribus@bitbucket.org/tribusmedia/tm-starter-01.git
-git clone git@bitbucket.org:tribusmedia/tm-starter-01.git
-mv tm-starter-01 $fpthemename
+
+git clone git@bitbucket.org:joshsmith01/eom-fp-starter.git $fpthemename
 cd $fpthemename
 sudo npm install
 
@@ -219,7 +286,7 @@ cd ${dirpath}${sitedirectory}/wp-content/themes/$fpthemename
     
 
 #   git remote set-url origin https://$username@bitbucket.org/$username/$fpthemename.git
-    git remote set-url origin git@bitbucket.org:tribusmedia/$fpthemename.git 
+    git remote set-url origin git@bitbucket.org:joshsmith01/$fpthemename.git 
     git branch initial-dev/${myname}
     
     git push -u origin --all
