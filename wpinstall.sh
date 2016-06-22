@@ -281,17 +281,16 @@ clear
 cd ${dirpath}${sitedirectory}/wp-content/themes/$fpthemename
 # startbitbucket - creates remote bitbucket repo and adds it as git remote to cwd
 # Users should use ssh if you can. It'll save you time from adding usernames and passwords.
-
-#   Use Bitbucket's 2.0 api to add repos
     
 
 #   git remote set-url origin https://$username@bitbucket.org/$username/$fpthemename.git
-    git remote set-url origin git@bitbucket.org:joshsmith01/$fpthemename.git 
-    git branch initial-dev/${myname}
+    git remote set-url origin git@bitbucket.org:${username}/${fpthemename}.git 
     
+    curl -X POST -v -u ${username}:${password} -H "Content-Type: application/json" https://api.bitbucket.org/2.0/repositories/${username}/${fpthemename} -d '{"scm": "git", "is_private": "true", "fork_policy": "no_public_forks" }'
+
     git push -u origin --all
     git push -u origin --tags
-    git checkout initial-dev/${myname}
+    git checkout initial-cd dev_${myname}
 # END check if core is downloaded and download it
 # fi
 
